@@ -1,0 +1,138 @@
+<style>
+  form {
+    background-color:lightgray;
+    height:250px;
+    display:flex;
+    flex-direction:column;
+    align-items: center;
+  }
+  form > div {
+    display: flex;
+    width: 100%;
+  }
+  .form-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    width: 50%;
+    height:150px;
+  }
+  .form-row {
+    height:50px;
+    width:25%;
+    display: flex;
+    justify-content: space-around;
+    align-items:center;
+  }
+  label {
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+  }
+  .form-row > * {
+    background-color: black;
+    color: white;
+    text-transform: uppercase;
+    font-size: 14px;
+    border: none;
+    padding: 10px 20px;
+    font-weight:bolder;
+  }
+  .form-row > *:hover {
+    background-color: white;
+    color: black;
+  }
+  .row {
+    border:1px solid gray;
+    width:100%;
+    display: flex;
+  }
+  .row:first-of-type {
+    background-color:lightgray;
+    padding:5px 0px;
+    font-weight:bolder;
+    border:1px solid black;
+  }
+  .row > div {
+    width: 25%;
+  }
+</style>
+
+<div style="display:flex;flex-direction:column;align-items:center;">
+
+  <div style="width:80%;">
+    <form id="form" action="/index" method="get">
+      <div class="form-row">
+        Form
+      </div>
+
+      <div>
+        <div class="form-column">
+          <label>Issue Summary
+            <input type="text" name="form[summary]" value="<%= @form_params[:summary] %>">
+          </label>
+          <label>Reporter Name
+            <input type="text" name="form[reporter_name]" value="<%= @form_params[:reporter_name] %>">
+          </label>
+          <label>Assignee Name
+            <input type="text" name="form[assignee_name]" value="<%= @form_params[:assignee_name] %>">
+          </label>
+        </div>
+
+        <div class="form-column">
+          <label>Page
+            <input type="number" name="form[page]" value="<%= @form_params[:page] || 1 %>" min=1>
+          </label>
+          <label>Page Size
+            <input type="number" name="form[page_size]" value="<%= @form_params[:page_size] || 10 %>" step=5 min=5 max=20>
+          </label>
+          <label>Sort Order
+            <select name="form[order]" id="order">
+              <option value="created_at"></option>
+              <option value="assignees.name">Assignee Name</option>
+              <option value="reporters.name">Reporter Name</option>
+              <option value="summary">Summary</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <button type="submit">Fetch Issues</button>
+        <input type="button" onclick="location.href='/'" value="Clear" />
+      </div>
+    </form>
+  </div>
+
+  <% if @issues.empty? %>
+  <div style="margin:50px">
+    <% if @form_params[:blank] %>
+      Enter Search Params In Form
+    <% else %>
+      No Results. Try a broader search or a lower page number.
+    <% end %>
+  </div>
+  <% else %>
+  <div style="width:80%;">
+    <div id="header" class="row">
+      <div style="width:50%;">Summary</div>
+      <div>Reporter</div>
+      <div>Assignee</div>
+    </div>
+    <% @issues.map do |i| %>
+    <div class="row">
+      <div style="width:50%;"><%= i.summary %></div>
+      <div><%= i.reporter_name %></div>
+      <div><%= i.assignee_name %></div>
+    </div>
+    <% end %>
+  </div>
+  <% end %>
+</div>
+
+<script type="text/javascript">
+  if (Boolean(<%= @form_params[:order].present? %>)) {
+    document.getElementById('order').value = "<%= @form_params[:order] %>"
+  }
+</script>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PaginatedIndexChallenge</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all' %>
+    <%= javascript_include_tag 'application' %>
+
+    <style>
+      body {
+        font-family: sans-serif; 
+      }
+    </style>
+
+  </head>
+
+  <body>
+    <%= yield %>
+  </body>
+</html>
